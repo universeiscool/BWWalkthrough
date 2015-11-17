@@ -32,21 +32,21 @@ This delegate performs basic operations such as dismissing the Walkthrough or ca
 Probably the Walkthrough is presented by this delegate.
 **/
 
-@objc protocol BWWalkthroughViewControllerDelegate{
+@objc public protocol BWWalkthroughViewControllerDelegate{
     
     @objc optional func walkthroughCloseButtonPressed()              // If the skipRequest(sender:) action is connected to a button, this function is called when that button is pressed.
     @objc optional func walkthroughNextButtonPressed()               //
     @objc optional func walkthroughPrevButtonPressed()               //
     @objc optional func walkthroughPageDidChange(pageNumber:Int)     // Called when current page changes
-
+    
 }
 
-/** 
-Walkthrough Page:
-The walkthrough page represents any page added to the Walkthrough.
-At the moment it's only used to perform custom animations on didScroll.
-**/
-@objc protocol BWWalkthroughPage{
+/**
+ Walkthrough Page:
+ The walkthrough page represents any page added to the Walkthrough.
+ At the moment it's only used to perform custom animations on didScroll.
+ **/
+@objc public protocol BWWalkthroughPage{
     // While sliding to the "next" slide (from right to left), the "current" slide changes its offset from 1.0 to 2.0 while the "next" slide changes it from 0.0 to 1.0
     // While sliding to the "previous" slide (left to right), the current slide changes its offset from 1.0 to 0.0 while the "previous" slide changes it from 2.0 to 1.0
     // The other pages update their offsets whith values like 2.0, 3.0, -2.0... depending on their positions and on the status of the walkthrough
@@ -56,33 +56,33 @@ At the moment it's only used to perform custom animations on didScroll.
 }
 
 
-@objc class BWWalkthroughViewController: UIViewController, UIScrollViewDelegate{
+@objc public class BWWalkthroughViewController: UIViewController, UIScrollViewDelegate{
     
     // MARK: - Public properties -
     
-    weak var delegate:BWWalkthroughViewControllerDelegate?
+    weak public var delegate:BWWalkthroughViewControllerDelegate?
     
     // TODO: If you need a page control, next or prev buttons add them via IB and connect them with these Outlets
-    @IBOutlet var pageControl:UIPageControl?
-    @IBOutlet var nextButton:UIButton?
-    @IBOutlet var prevButton:UIButton?
-    @IBOutlet var closeButton:UIButton?
+    @IBOutlet public var pageControl:UIPageControl?
+    @IBOutlet public var nextButton:UIButton?
+    @IBOutlet public var prevButton:UIButton?
+    @IBOutlet public var closeButton:UIButton?
     
-    var currentPage:Int{    // The index of the current page (readonly)
+    public var currentPage:Int{    // The index of the current page (readonly)
         get{
             let page = Int((scrollview.contentOffset.x / view.bounds.size.width))
             return page
         }
     }
     
-    var currentViewController:UIViewController{ //the controller for the currently visible page
+    public var currentViewController:UIViewController{ //the controller for the currently visible page
         get{
             let currentPage = self.currentPage;
             return controllers[currentPage];
         }
     }
     
-    var numberOfPages:Int{ //the total number of pages in the walkthrough
+    public var numberOfPages:Int{ //the total number of pages in the walkthrough
         get{
             return self.controllers.count;
         }
@@ -98,7 +98,7 @@ At the moment it's only used to perform custom animations on didScroll.
     
     // MARK: - Overrides -
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         // Setup the scrollview
         scrollview = UIScrollView()
         scrollview.showsHorizontalScrollIndicator = false
@@ -111,13 +111,13 @@ At the moment it's only used to perform custom animations on didScroll.
         super.init(coder: aDecoder)
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?){
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?){
         scrollview = UIScrollView()
         controllers = Array()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         // Initialize UI Elements
@@ -138,7 +138,7 @@ At the moment it's only used to perform custom animations on didScroll.
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
         
         pageControl?.numberOfPages = controllers.count
@@ -149,9 +149,9 @@ At the moment it's only used to perform custom animations on didScroll.
     // MARK: - Internal methods -
     
     /**
-     * Progresses to the next page, or calls the finished delegate method if already on the last page
-     */
-    @IBAction func nextPage(){
+    * Progresses to the next page, or calls the finished delegate method if already on the last page
+    */
+    @IBAction public func nextPage(){
         if (currentPage + 1) < controllers.count {
             
             delegate?.walkthroughNextButtonPressed?()
@@ -159,7 +159,7 @@ At the moment it's only used to perform custom animations on didScroll.
         }
     }
     
-    @IBAction func prevPage(){
+    @IBAction public func prevPage(){
         
         if currentPage > 0 {
             
@@ -170,12 +170,12 @@ At the moment it's only used to perform custom animations on didScroll.
     
     // TODO: If you want to implement a "skip" button
     // connect the button to this IBAction and implement the delegate with the skipWalkthrough
-    @IBAction func close(sender: AnyObject){
+    @IBAction public func close(sender: AnyObject){
         delegate?.walkthroughCloseButtonPressed?()
     }
     
-    func pageControlDidTouch(){
-
+    public func pageControlDidTouch(){
+        
         if let pc = pageControl{
             gotoPage(pc.currentPage)
         }
@@ -191,11 +191,11 @@ At the moment it's only used to perform custom animations on didScroll.
     }
     
     /**
-    addViewController
-    Add a new page to the walkthrough. 
-    To have information about the current position of the page in the walkthrough add a UIVIewController which implements BWWalkthroughPage    
-    */
-    func addViewController(vc:UIViewController)->Void{
+     addViewController
+     Add a new page to the walkthrough.
+     To have information about the current position of the page in the walkthrough add a UIVIewController which implements BWWalkthroughPage
+     */
+    public func addViewController(vc:UIViewController)->Void{
         
         controllers.append(vc)
         
@@ -235,10 +235,10 @@ At the moment it's only used to perform custom animations on didScroll.
             scrollview.addConstraints(lastViewConstraint! as! [NSLayoutConstraint])
         }
     }
-
-    /** 
-    Update the UI to reflect the current walkthrough status
-    **/
+    
+    /**
+     Update the UI to reflect the current walkthrough status
+     **/
     
     private func updateUI(){
         
@@ -267,12 +267,12 @@ At the moment it's only used to perform custom animations on didScroll.
     
     // MARK: - Scrollview Delegate -
     
-    func scrollViewDidScroll(sv: UIScrollView) {
+    public func scrollViewDidScroll(sv: UIScrollView) {
         
         for var i=0; i < controllers.count; i++ {
             
             if let vc = controllers[i] as? BWWalkthroughPage{
-            
+                
                 let mx = ((scrollview.contentOffset.x + view.bounds.size.width) - (view.bounds.size.width * CGFloat(i))) / view.bounds.size.width
                 
                 // While sliding to the "next" slide (from right to left), the "current" slide changes its offset from 1.0 to 2.0 while the "next" slide changes it from 0.0 to 1.0
@@ -291,20 +291,20 @@ At the moment it's only used to perform custom animations on didScroll.
         }
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         updateUI()
     }
     
-    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         updateUI()
     }
     
     /* WIP */
-    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override public func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         print("CHANGE")
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override public func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         print("SIZE")
     }
     
