@@ -25,7 +25,7 @@ SOFTWARE.
 
 import UIKit
 
-enum WalkthroughAnimationType:String{
+public enum WalkthroughAnimationType:String{
     case Linear = "Linear"
     case Curve = "Curve"
     case Zoom = "Zoom"
@@ -41,7 +41,7 @@ enum WalkthroughAnimationType:String{
     }
 }
 
-class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPage {
+public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPage {
     
     private var animation:WalkthroughAnimationType = .Linear
     private var subsWeights:[CGPoint] = Array()
