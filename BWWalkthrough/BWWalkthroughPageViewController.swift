@@ -49,9 +49,9 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
     
     // MARK: Inspectable Properties
     // Edit these values using the Attribute inspector or modify directly the "User defined runtime attributes" in IB
-    @IBInspectable var speed:CGPoint = CGPoint(x: 0.0, y: 0.0);            // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
-    @IBInspectable var speedVariance:CGPoint = CGPoint(x: 0.0, y: 0.0)     // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
-    @IBInspectable var animationType:String {
+    @IBInspectable public var speed:CGPoint = CGPoint(x: 0.0, y: 0.0);            // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
+    @IBInspectable public var speedVariance:CGPoint = CGPoint(x: 0.0, y: 0.0)     // Note if you set this value via Attribute inspector it can only be an Integer (change it manually via User defined runtime attribute if you need a Float)
+    @IBInspectable public var animationType:String {
         set(value){
             self.animation = WalkthroughAnimationType(rawValue: value)!
         }
@@ -59,8 +59,8 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
             return self.animation.rawValue
         }
     }
-    @IBInspectable var animateAlpha:Bool = false
-    @IBInspectable var staticTags:String {                                 // A comma separated list of tags that you don't want to animate during the transition/scroll 
+    @IBInspectable public var animateAlpha:Bool = false
+    @IBInspectable public var staticTags:String {                                 // A comma separated list of tags that you don't want to animate during the transition/scroll
         set(value){
             self.notAnimatableViews = value.componentsSeparatedByString(",").map{Int($0)!}
         }
@@ -70,8 +70,8 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
     }
     
     // MARK: BWWalkthroughPage Implementation
-
-    override func viewDidLoad() {
+    
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.view.layer.masksToBounds = true
         subsWeights = Array()
@@ -86,7 +86,7 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
         
     }
     
-    func walkthroughDidScroll(position: CGFloat, offset: CGFloat) {
+    public func walkthroughDidScroll(position: CGFloat, offset: CGFloat) {
         
         for(var i = 0; i < subsWeights.count ;i++){
             
@@ -112,12 +112,12 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
             }
         }
     }
-
+    
     
     // MARK: Animations (WIP)
     
     private func animationAlpha(index:Int, var _ offset:CGFloat){
-        let cView = view.subviews[index] 
+        let cView = view.subviews[index]
         
         if(offset > 1.0){
             offset = 1.0 + (1.0 - offset)
@@ -134,7 +134,7 @@ public class BWWalkthroughPageViewController: UIViewController, BWWalkthroughPag
     
     private func animationZoom(index:Int, _ offset:CGFloat){
         var transform = CATransform3DIdentity
-
+        
         var tmpOffset = offset
         if(tmpOffset > 1.0){
             tmpOffset = 1.0 + (1.0 - tmpOffset)
